@@ -1,7 +1,3 @@
-# Testes Automatizados - Cypress
-
-Projeto de automação de testes E2E usando Cypress no site Automation Exercise.
-
 ## Como instalar
 
 Crie o arquivo de manifesto package.json utilizando a configuração padrão
