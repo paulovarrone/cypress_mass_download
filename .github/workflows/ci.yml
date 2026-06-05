@@ -1,0 +1,27 @@
+name: CI - Cypress Mass Download
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Cypress run
+        uses: cypress-io/github-action@v7
+        with:
+          browser: chrome   # downloads são mais estáveis no Chrome
+
+      - name: Upload downloads on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-downloads
+          path: cypress/downloads
