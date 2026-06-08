@@ -5,16 +5,18 @@ on:
   pull_request:
     branches: [main]
   workflow_dispatch:
+
 jobs:
   test:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        containers: [1, 2, 3, 4]
+        containers: [1, 2, 3, 4, 5, 6]
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+
       - name: Cypress run
         uses: cypress-io/github-action@v7
         with:
@@ -24,10 +26,36 @@ jobs:
         env:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      # Salva os arquivos baixados pra inspeção, se algum teste falhar
-      - name: Upload downloads on failure
-        if: failure()
+
+      - name: Conferir total baixado neste container
+        if: always()
+        run: |
+          QTD=$(find cypress/downloads -type f 2>/dev/null | wc -l)
+          echo "Arquivos baixados no container ${{ matrix.containers }}: $QTD"
+
+      - name: Upload downloads
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: cypress-downloads
+          name: cypress-downloads-${{ matrix.containers }}
           path: cypress/downloads
+          if-no-files-found: warn
+
+  total:
+    needs: test
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar todos os artefatos de download
+        uses: actions/download-artifact@v4
+        with:
+          pattern: cypress-downloads-*
+          path: downloads-consolidado
+          merge-multiple: true
+
+      - name: Total consolidado
+        run: |
+          QTD=$(find downloads-consolidado -type f 2>/dev/null | wc -l)
+          echo "================================="
+          echo "TOTAL DE ARQUIVOS BAIXADOS: $QTD"
+          echo "================================="
