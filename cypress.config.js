@@ -3,7 +3,8 @@ const { defineConfig } = require("cypress");
 module.exports = defineConfig({
   viewportWidth: 1920,
   viewportHeight: 1080,
-
+  projectId: "3mavs6",
+  
   e2e: {
     baseUrl: 'https://samplefile.com/',
     redirectionLimit: 100,
@@ -19,6 +20,7 @@ module.exports = defineConfig({
       '*facebook.net'
     ],
     testIsolation: false,
+    experimentalRunAllSpecs: true,
     setupNodeEvents(on, config) {
     },
   },

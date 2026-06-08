@@ -14,4 +14,11 @@
 // ***********************************************************
 
 // Import commands.js using ES2015 syntax:
-import './download'
+// import './download'
+import './global'
+import './D1-3'
+import './D4-6'
+import './D7-9'
+import './D10-12'
+import './D13-15'
+import './D16-18'
